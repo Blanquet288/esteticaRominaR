@@ -1,0 +1,101 @@
+:root {
+  --color-cream: #fdfbf7;
+  --color-white: #ffffff;
+  --color-sand: #f7f2eb;
+  --color-wine: #9e5a63;
+  --color-rose: #c48b9f;
+  --color-terracotta: #c47c65;
+  --color-blush: #f4e6ea;
+  --color-ink: #2d2424;
+  --color-muted: #7a6a6a;
+  --color-border: #e8dfd4;
+  --color-ivory: #fdfbf7;
+  --color-rose-deep: #9e5a63;
+  --shadow-card: 0 12px 40px rgba(45, 36, 36, 0.06);
+  --glass: rgba(255, 255, 255, 0.72);
+  --radius: 1rem;
+  --radius-lg: 1.25rem;
+  --sidebar-width: 272px;
+  --topbar-height: 76px;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Outfit', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  background: #faf7f2;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-wine);
+  outline-offset: 2px;
+}
+
+@media print {
+  html,
+  body,
+  #root {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-letterhead,
+  .cierre-print-head,
+  .anual-print-head {
+    position: relative;
+    padding-right: 120px;
+  }
+
+  .print-logo {
+    position: absolute;
+    top: 0;
+    right: 0;
+    max-width: 110px;
+    max-height: 64px;
+    object-fit: contain;
+  }
+
+  .app-shell,
+  .app-content,
+  .page-area {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+}

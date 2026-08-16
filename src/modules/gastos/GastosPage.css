@@ -1,0 +1,415 @@
+.gastos-page {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.gastos-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.85rem;
+  animation: fadeUp 0.4s ease both;
+}
+
+.gastos-kicker {
+  margin: 0;
+  color: var(--color-wine);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gastos-hero h2 {
+  margin: 0.3rem 0 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  line-height: 1.15;
+}
+
+.gastos-modal h3 {
+  margin: 0.25rem 0 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  line-height: 1.2;
+}
+
+.gastos-hero p,
+.gastos-modal p {
+  margin: 0.4rem 0 0;
+  color: var(--color-muted);
+}
+
+.gastos-add,
+.gastos-submit,
+.month-nav button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 0;
+  cursor: pointer;
+}
+
+.gastos-add,
+.gastos-submit {
+  width: 100%;
+  padding: 0.78rem 1rem;
+  color: #fff;
+  font-weight: 600;
+  background: linear-gradient(135deg, #8a3d4c, #561f2a);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 22px rgba(86, 31, 42, 0.18);
+}
+
+.gastos-add.is-header {
+  display: none;
+}
+
+.gastos-add.is-inline {
+  display: inline-flex;
+  padding: 0.85rem 1rem;
+}
+
+.gastos-submit {
+  margin-top: 0.25rem;
+  padding: 0.9rem 1rem;
+}
+
+.gastos-submit:disabled,
+.gastos-add:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.month-nav {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.month-nav button {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 40px;
+  color: var(--color-ink);
+  background: #fff;
+  border: 1px solid #e7e0d8;
+  border-radius: 12px;
+}
+
+.month-nav select {
+  min-width: 0;
+  height: 40px;
+  padding: 0 0.65rem;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.9rem;
+  background: #fff;
+  border: 1px solid #e7e0d8;
+  border-radius: 0.75rem;
+}
+
+.month-nav .month-select {
+  flex: 1 1 auto;
+}
+
+.month-nav .year-select {
+  flex: 0 0 5.4rem;
+  width: 5.4rem;
+}
+
+.gastos-field input,
+.gastos-field select {
+  width: 100%;
+  padding: 0.78rem 0.9rem;
+  color: var(--color-ink);
+  font: inherit;
+  background: #fff;
+  border: 1px solid #e7e0d8;
+  border-radius: 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gastos-field input:focus,
+.gastos-field select:focus,
+.month-nav select:focus,
+.month-nav button:focus-visible {
+  outline: none;
+  border-color: #9e5a63;
+  box-shadow: 0 0 0 3px rgba(126, 53, 68, 0.14);
+}
+
+.gastos-error {
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+  color: #6b2d35;
+  background: #f6e9eb;
+  border-radius: var(--radius);
+}
+
+.gastos-kpis,
+.week-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.gastos-kpis article,
+.week-grid article {
+  padding: 1rem 1.1rem;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 1.15rem;
+  box-shadow: var(--shadow-card);
+}
+
+.gastos-kpis span,
+.week-grid span {
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+
+.gastos-kpis strong,
+.week-grid strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+}
+
+.gastos-table-card {
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.gastos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gastos-table th,
+.gastos-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.gastos-table th {
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.gastos-table .is-money {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 0.22rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+}
+
+.badge-fijo {
+  color: #7e3544;
+  background: #f4e6ea;
+}
+
+.badge-operativo {
+  color: #8a5a22;
+  background: #f8eedd;
+}
+
+.badge-week {
+  color: #5c4a3a;
+  background: #f3eee8;
+}
+
+.row-actions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.row-actions button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--color-wine);
+  background: var(--color-ivory);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.gastos-empty {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  padding: 1.5rem;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.gastos-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(45, 36, 36, 0.38);
+  backdrop-filter: blur(6px);
+}
+
+.gastos-modal {
+  position: relative;
+  display: grid;
+  gap: 0.85rem;
+  width: min(100%, 440px);
+  padding: 1.5rem 1.3rem 1.3rem;
+  background: #fff;
+  border-radius: 1.4rem;
+  box-shadow: 0 24px 50px rgba(45, 36, 36, 0.2);
+  animation: fadeUp 0.25s ease both;
+}
+
+.gastos-modal > .gastos-kicker,
+.gastos-modal > h3 {
+  padding-right: 2.2rem;
+}
+
+.gastos-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0.5rem;
+  color: #a8a29e;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.gastos-close:hover {
+  color: #44403c;
+  background: #f5f5f4;
+}
+
+.gastos-field {
+  display: grid;
+  gap: 0.4rem;
+  color: #7a6a6a;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.gastos-field span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.gastos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.confirm-actions button {
+  padding: 0.65rem 0.9rem;
+  background: var(--color-sand);
+  border: 0;
+  border-radius: 0.8rem;
+  cursor: pointer;
+}
+
+.confirm-actions .is-danger {
+  color: #fff;
+  background: #7e3544;
+}
+
+.gastos-toast {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  z-index: 60;
+  padding: 0.85rem 1rem;
+  color: #fff;
+  background: #6b2d35;
+  border-radius: 0.9rem;
+  animation: fadeUp 0.3s ease both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 720px) {
+  .gastos-hero {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .gastos-add.is-header {
+    display: inline-flex;
+    width: auto;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+    border-radius: 0.95rem;
+  }
+
+  .gastos-add.is-inline {
+    display: none;
+  }
+
+  .month-nav {
+    max-width: 420px;
+  }
+
+  .gastos-kpis {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .week-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

@@ -1,0 +1,28 @@
+.loading-screen {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(196, 139, 159, 0.18), transparent 36%),
+    var(--color-cream);
+}
+
+.loading-logo {
+  width: 112px;
+  height: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 28px rgba(45, 36, 36, 0.14);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.96);
+    opacity: 0.78;
+  }
+}

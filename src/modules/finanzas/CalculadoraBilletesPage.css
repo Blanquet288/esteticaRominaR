@@ -1,0 +1,801 @@
+.calc-page {
+  display: grid;
+  gap: 1.15rem;
+}
+
+.calc-hero {
+  animation: calcFade 0.4s ease both;
+}
+
+.calc-kicker {
+  margin: 0;
+  color: var(--color-wine);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.calc-hero h2,
+.global-card h3,
+.reparto-panel h3 {
+  margin: 0.3rem 0 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  line-height: 1.15;
+}
+
+.calc-hero h2 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.calc-hero p,
+.global-card p,
+.reparto-panel > p {
+  margin: 0.4rem 0 0;
+  color: var(--color-muted);
+}
+
+.calc-tabs,
+.week-tabs {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.calc-tabs {
+  grid-template-columns: 1fr;
+  padding: 0.25rem;
+  background: #f5f0ea;
+  border-radius: 1.1rem;
+}
+
+.calc-tabs button,
+.week-tabs button,
+.calc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.calc-tabs button {
+  padding: 0.7rem 0.75rem;
+  color: #6e5e60;
+  font-size: 0.86rem;
+  font-weight: 500;
+  background: transparent;
+  border: 0;
+  border-radius: 0.85rem;
+}
+
+.calc-tabs button.is-active {
+  color: #fff;
+  background: linear-gradient(135deg, #8a3d4c, #561f2a);
+}
+
+.month-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.month-nav button {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 40px;
+  color: var(--color-ink);
+  background: #fff;
+  border: 1px solid #e7e0d8;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.month-nav select {
+  min-width: 0;
+  height: 40px;
+  padding: 0 0.65rem;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.9rem;
+  background: #fff;
+  border: 1px solid #e7e0d8;
+  border-radius: 0.75rem;
+}
+
+.month-nav .month-select {
+  flex: 1 1 auto;
+}
+
+.month-nav .year-select {
+  flex: 0 0 5.4rem;
+  width: 5.4rem;
+}
+
+.week-pills {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.week-pills button {
+  padding: 0.45rem 0.25rem;
+  color: #6e5e60;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.week-pills button.is-active {
+  color: #fff;
+  background: linear-gradient(135deg, #8a3d4c, #561f2a);
+  border-color: transparent;
+}
+
+.calc-error {
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+  color: #6b2d35;
+  background: #f6e9eb;
+  border-radius: var(--radius);
+}
+
+.cuadre-card,
+.global-card,
+.reparto-panel,
+.bill-card,
+.hist-card,
+.calc-empty {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+
+.cuadre-card,
+.global-card,
+.reparto-panel {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem 1.05rem 1.1rem;
+}
+
+.cuadre-grid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.cuadre-grid article {
+  padding: 0.75rem 0.8rem;
+  background: #fdfbf7;
+  border-radius: 1rem;
+}
+
+.cuadre-grid span,
+.bill-card small,
+.hist-card small,
+.reparto-panel span {
+  color: var(--color-muted);
+  font-size: 0.78rem;
+}
+
+.cuadre-grid strong,
+.reparto-panel strong,
+.libre-total {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+}
+
+.cuadre-grid .is-ok strong {
+  color: #3f6b4e;
+}
+
+.cuadre-grid .is-diff strong {
+  color: #7e3544;
+}
+
+.bill-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.bill-card {
+  overflow: hidden;
+  padding: 0;
+  text-align: center;
+  font: inherit;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(45, 36, 36, 0.06);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bill-card:hover,
+.bill-card:focus-visible {
+  border-color: #5c2430;
+}
+
+.bill-card:active {
+  transform: scale(0.95);
+}
+
+.bill-card.has-count {
+  border-color: #5c2430;
+  background: #fdf8f4;
+}
+
+.bill-card img,
+.bill-card .coin-mark {
+  display: block;
+  width: 100%;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.bill-card-body {
+  display: grid;
+  gap: 0.05rem;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.bill-card-body strong {
+  color: var(--color-ink);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.bill-card-body em {
+  color: #1c1917;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.bill-card-body small {
+  color: #78716c;
+  font-size: 0.75rem;
+}
+
+.bill-card.is-coins .coin-mark {
+  display: grid;
+  place-items: center;
+  color: #c9a96e;
+  background: #f7f1e6;
+}
+
+.calc-btn {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  color: #fff;
+  font-weight: 600;
+  background: linear-gradient(135deg, #8a3d4c, #561f2a);
+  border: 0;
+  border-radius: 0.95rem;
+  box-shadow: 0 10px 22px rgba(86, 31, 42, 0.18);
+}
+
+.calc-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  box-shadow: none;
+}
+
+.calc-btn.is-ghost {
+  color: #7e3544;
+  background: #fff;
+  border: 1px solid #e3c9c6;
+  box-shadow: none;
+}
+
+.calc-btn.is-danger {
+  color: #fff;
+  background: #7e3544;
+  box-shadow: none;
+}
+
+.hist-actions {
+  display: grid;
+  gap: 0.45rem;
+}
+
+@media (min-width: 720px) {
+  .hist-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.step-badge {
+  margin: 0;
+  color: #5c2430;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.count-step,
+.reparto-panel.is-step {
+  display: grid;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  animation: calcFade 0.28s ease both;
+}
+
+.count-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.count-side,
+.count-tray {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.tray-title {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.cuadre-stack {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cuadre-stack article {
+  padding: 0.55rem 0.7rem;
+  background: #fdfbf7;
+  border-radius: 0.85rem;
+}
+
+.cuadre-stack span {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+}
+
+.cuadre-stack strong {
+  display: block;
+  margin-top: 0.1rem;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+}
+
+.cuadre-stack .is-ok strong {
+  color: #3f6b4e;
+  font-size: 1.7rem;
+}
+
+.cuadre-stack .is-diff strong {
+  color: #7e3544;
+  font-size: 1.7rem;
+}
+
+.total-card {
+  padding: 0.9rem 1rem;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 1.15rem;
+  box-shadow: var(--shadow-card);
+}
+
+.total-card span,
+.total-card small {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+}
+
+.total-card strong {
+  display: block;
+  margin: 0.15rem 0 0.1rem;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+}
+
+.calc-btn.is-process {
+  margin-top: 0.25rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 18px rgba(86, 31, 42, 0.2);
+}
+
+.reparto-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.count-modal {
+  position: relative;
+  display: grid;
+  gap: 0.7rem;
+  width: min(100%, 420px);
+  padding: 1.25rem 1.15rem 1.15rem;
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 24px 50px rgba(45, 36, 36, 0.2);
+  animation: calcFade 0.22s ease both;
+}
+
+.count-modal-img {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  border-radius: 1rem;
+}
+
+.count-modal-coin {
+  display: grid;
+  place-items: center;
+  height: 92px;
+  color: #c9a96e;
+  background: #f7f1e6;
+  border-radius: 1rem;
+}
+
+.count-modal h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+}
+
+.count-field {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+
+.count-field input {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 1.7rem;
+  font-weight: 600;
+  text-align: center;
+  background: #fdfbf7;
+  border: 1px solid #e7e0d8;
+  border-radius: 0.95rem;
+}
+
+.count-quick {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.count-quick button {
+  padding: 0.7rem 0.3rem;
+  color: #5c2430;
+  font: inherit;
+  font-weight: 600;
+  background: #f3ebe3;
+  border: 0;
+  border-radius: 0.8rem;
+  cursor: pointer;
+}
+
+.count-quick .is-clear {
+  color: #7e3544;
+  background: #f6e9eb;
+}
+
+.count-subtotal {
+  margin: 0;
+  color: #7e3544;
+  font-weight: 600;
+  text-align: center;
+}
+
+.reparto-cols {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.reparto-cols article {
+  padding: 0.9rem 1rem;
+  background: #fdfbf7;
+  border-radius: 1rem;
+}
+
+.reparto-cols p,
+.reparto-cols li {
+  margin: 0.45rem 0 0;
+  color: var(--color-ink);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.reparto-cols ul {
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reparto-cols em {
+  display: block;
+  color: var(--color-wine);
+  font-style: normal;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.libre-panel {
+  padding: 1rem 1.05rem 1.1rem;
+  background: #fdf8f4;
+  border: 1px solid #eadfd4;
+  border-radius: 1.15rem;
+  box-shadow: var(--shadow-card);
+}
+
+.libre-panel h3 {
+  margin: 0.25rem 0 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  line-height: 1.15;
+}
+
+.libre-panel p {
+  margin: 0.35rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.86rem;
+}
+
+.libre-panel .libre-total {
+  margin-top: 0.75rem;
+  font-size: 2.1rem;
+}
+
+.libre-breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+  margin: 0.85rem 0 0;
+}
+
+.libre-breakdown div {
+  padding: 0.55rem 0.65rem;
+  background: #fff;
+  border-radius: 0.8rem;
+}
+
+.libre-breakdown dt {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+}
+
+.libre-breakdown dd {
+  margin: 0.15rem 0 0;
+  font-weight: 600;
+}
+
+.calc-btn.is-clear {
+  box-shadow: none;
+}
+
+.hist-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.hist-card {
+  display: grid;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 1rem 1.05rem;
+}
+
+.hist-card strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+}
+
+.hist-card dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.hist-card dt {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+}
+
+.hist-card dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.hist-card dd.is-diff {
+  color: #7e3544;
+}
+
+.hist-card p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+
+.calc-empty {
+  display: grid;
+  place-items: center;
+  gap: 0.4rem;
+  min-height: 160px;
+  padding: 1.2rem;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.calc-empty p {
+  margin: 0;
+}
+
+.calc-toast {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  z-index: 60;
+  padding: 0.85rem 1rem;
+  color: #fff;
+  background: #6b2d35;
+  border-radius: 0.9rem;
+}
+
+.calc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(45, 36, 36, 0.38);
+  backdrop-filter: blur(6px);
+}
+
+.calc-modal {
+  position: relative;
+  display: grid;
+  gap: 0.7rem;
+  width: min(100%, 420px);
+  padding: 1.4rem 1.25rem 1.2rem;
+  background: #fff;
+  border-radius: 1.4rem;
+  box-shadow: 0 24px 50px rgba(45, 36, 36, 0.2);
+}
+
+.calc-modal h3 {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+}
+
+.calc-modal p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.calc-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: #a8a29e;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.calc-confirm {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.calc-confirm button {
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  background: var(--color-sand);
+  border: 0;
+  border-radius: 0.8rem;
+  cursor: pointer;
+}
+
+.calc-confirm .is-danger {
+  color: #fff;
+  background: #7e3544;
+}
+
+.calc-skel {
+  background: linear-gradient(90deg, #f4eae6 25%, #fdfbf7 50%, #f4eae6 75%);
+  background-size: 200% 100%;
+  border-radius: 1rem;
+  animation: calcShimmer 1.3s linear infinite;
+}
+
+.calc-skel-title { height: 88px; }
+.calc-skel-nav { height: 48px; }
+.calc-skel-bill { height: 118px; }
+.calc-skel-hist { height: 210px; }
+
+@keyframes calcFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes calcShimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@media (min-width: 720px) {
+  .calc-tabs {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .month-nav {
+    max-width: 420px;
+  }
+
+  .cuadre-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .bill-card img,
+  .bill-card .coin-mark {
+    height: 3.5rem;
+  }
+
+  .bill-card-body em {
+    font-size: 1.25rem;
+  }
+
+  .reparto-cols,
+  .reparto-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .count-layout {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 1.25rem;
+  }
+
+  .count-side {
+    position: sticky;
+    top: 0;
+  }
+}

@@ -1,0 +1,322 @@
+.cfg-page {
+  display: grid;
+  gap: 1.15rem;
+}
+
+.cfg-hero {
+  animation: cfgFade 0.4s ease both;
+}
+
+.cfg-kicker {
+  margin: 0;
+  color: var(--color-wine);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cfg-hero h2,
+.cfg-card-head h3,
+.cfg-modal h3 {
+  margin: 0.3rem 0 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  line-height: 1.15;
+}
+
+.cfg-hero h2 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.cfg-hero p,
+.cfg-card-head p:not(.cfg-kicker),
+.cfg-modal p {
+  margin: 0.4rem 0 0;
+  color: var(--color-muted);
+}
+
+.cfg-error {
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+  color: #6b2d35;
+  background: #f6e9eb;
+  border-radius: var(--radius);
+}
+
+.cfg-card,
+.cfg-empty {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 1.2rem;
+  box-shadow: var(--shadow-card);
+}
+
+.cfg-card {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem 1.05rem 1.15rem;
+}
+
+.cfg-card-head h3 {
+  font-size: 1.45rem;
+}
+
+.cfg-card-head.is-split {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.cfg-form,
+.cfg-grid-2 {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.cfg-field {
+  display: grid;
+  gap: 0.38rem;
+  color: #7a6a6a;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.cfg-field input,
+.cfg-field textarea {
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  color: var(--color-ink);
+  font: inherit;
+  background: #fff;
+  border: 1px solid #e7e0d8;
+  border-radius: 0.75rem;
+}
+
+.cfg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.78rem 1rem;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  background: linear-gradient(135deg, #8a3d4c, #561f2a);
+  border: 0;
+  border-radius: 0.85rem;
+  box-shadow: 0 10px 22px rgba(86, 31, 42, 0.18);
+  cursor: pointer;
+}
+
+.cfg-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.cfg-btn.is-ghost {
+  color: #7e3544;
+  background: #fff;
+  border: 1px solid #e3c9c6;
+  box-shadow: none;
+}
+
+.cfg-btn.is-small {
+  width: auto;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.cfg-logo-box {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.cfg-logo-box img,
+.cfg-logo-empty {
+  width: min(100%, 220px);
+  height: 120px;
+  object-fit: contain;
+  background: #faf7f2;
+  border: 1px dashed #e3c9c6;
+  border-radius: 1rem;
+}
+
+.cfg-logo-empty {
+  display: grid;
+  place-items: center;
+  gap: 0.3rem;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+
+.cfg-logo-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cfg-table-wrap {
+  overflow-x: auto;
+}
+
+.cfg-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cfg-table th,
+.cfg-table td {
+  padding: 0.65rem 0.55rem;
+  text-align: left;
+  border-bottom: 1px solid #efe8e1;
+  font-size: 0.86rem;
+}
+
+.cfg-table th {
+  color: var(--color-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cfg-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.cfg-row-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.55rem;
+  color: #5c2430;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #f3ebe3;
+  border: 0;
+  border-radius: 0.6rem;
+  cursor: pointer;
+}
+
+.cfg-row-actions .is-danger {
+  color: #7e3544;
+  background: #f6e9eb;
+}
+
+.cfg-empty {
+  display: grid;
+  place-items: center;
+  gap: 0.4rem;
+  min-height: 140px;
+  padding: 1.2rem;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.cfg-empty p {
+  margin: 0;
+}
+
+.cfg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(45, 36, 36, 0.38);
+  backdrop-filter: blur(6px);
+}
+
+.cfg-modal {
+  position: relative;
+  display: grid;
+  gap: 0.75rem;
+  width: min(100%, 440px);
+  padding: 1.4rem 1.25rem 1.2rem;
+  background: #fff;
+  border-radius: 1.4rem;
+  box-shadow: 0 24px 50px rgba(45, 36, 36, 0.2);
+}
+
+.cfg-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: #a8a29e;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.cfg-confirm {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.cfg-confirm button {
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  background: var(--color-sand);
+  border: 0;
+  border-radius: 0.8rem;
+  cursor: pointer;
+}
+
+.cfg-confirm .is-danger {
+  color: #fff;
+  background: #7e3544;
+}
+
+.cfg-toast {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  z-index: 60;
+  padding: 0.85rem 1rem;
+  color: #fff;
+  background: #6b2d35;
+  border-radius: 0.9rem;
+}
+
+.cfg-skel {
+  background: linear-gradient(90deg, #f4eae6 25%, #fdfbf7 50%, #f4eae6 75%);
+  background-size: 200% 100%;
+  border-radius: 1rem;
+  animation: cfgShimmer 1.3s linear infinite;
+}
+
+.cfg-skel-title { height: 88px; }
+.cfg-skel-block { height: 220px; }
+
+@keyframes cfgFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cfgShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (min-width: 640px) {
+  .cfg-grid-2,
+  .cfg-logo-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cfg-btn.is-small {
+    align-self: center;
+  }
+}
