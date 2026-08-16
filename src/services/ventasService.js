@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { toDate, toNumber } from './dashboardService';
+import { normalizarTipoComisionServicio } from '../utils/helpers';
 
 const DAY_KEYS = {
   0: ['domingo', 'dom', 'sunday', 'sun', '0'],
@@ -43,8 +44,36 @@ export function roundMoney(value) {
 }
 
 export function normalizeCommissionType(value) {
-  const raw = String(value || 'porcentaje').toLowerCase();
-  return raw === 'fijo' || raw === 'fixed' || raw === 'monto' ? 'fijo' : 'porcentaje';
+  return normalizarTipoComisionServicio(value);
+}
+
+export function congelarComisionVenta({
+  monto,
+  cantidad = 1,
+  tipoComision = 'porcentaje',
+  comisionDefecto = 0,
+}) {
+  const tipo = normalizarTipoComisionServicio(tipoComision);
+  const qty = Math.max(1, Math.round(toNumber(cantidad)) || 1);
+  const total = roundMoney(monto);
+  const defecto = toNumber(comisionDefecto);
+  const comisionMonto =
+    tipo === 'monto_fijo'
+      ? roundMoney(defecto * qty)
+      : roundMoney((total * defecto) / 100);
+  const comisionPct =
+    tipo === 'monto_fijo'
+      ? total > 0
+        ? Math.round((comisionMonto / total) * 10000) / 100
+        : 0
+      : defecto;
+
+  return {
+    comisionTipo: tipo,
+    comisionPct,
+    comisionMonto,
+    utilidadNegocio: roundMoney(total - comisionMonto),
+  };
 }
 
 export function computeLine({
@@ -57,23 +86,24 @@ export function computeLine({
   const qty = Math.max(1, Math.round(toNumber(cantidad)) || 1);
   const unit = roundMoney(precioUnitario);
   const monto = roundMoney(unit * qty);
-  const tipo = normalizeCommissionType(comisionTipo);
-  const unitCommission = roundMoney(comisionUnitaria);
-  const percent = toNumber(comisionPct);
-  const comisionMonto =
-    tipo === 'fijo'
-      ? roundMoney(unitCommission * qty)
-      : roundMoney(monto * (percent / 100));
+  const tipo = normalizarTipoComisionServicio(comisionTipo);
+  const defecto = tipo === 'monto_fijo' ? comisionUnitaria : comisionPct;
+  const frozen = congelarComisionVenta({
+    monto,
+    cantidad: qty,
+    tipoComision: tipo,
+    comisionDefecto: defecto,
+  });
 
   return {
     cantidad: qty,
     precioUnitario: unit,
     monto,
-    comisionTipo: tipo,
-    comisionPct: tipo === 'porcentaje' ? percent : 0,
-    comisionUnitaria: tipo === 'fijo' ? unitCommission : 0,
-    comisionMonto,
-    utilidadNegocio: roundMoney(monto - comisionMonto),
+    comisionTipo: frozen.comisionTipo,
+    comisionPct: frozen.comisionPct,
+    comisionUnitaria: tipo === 'monto_fijo' ? roundMoney(comisionUnitaria) : 0,
+    comisionMonto: frozen.comisionMonto,
+    utilidadNegocio: frozen.utilidadNegocio,
   };
 }
 
@@ -161,7 +191,7 @@ export async function loadVentasSetup() {
         nombre: data.nombre || data.servicio || data.titulo || 'Servicio',
         precioBase: toNumber(data.precioBase),
         comisionDefecto: toNumber(data.comisionDefecto),
-        tipoComision: normalizeCommissionType(data.tipoComision),
+        tipoComision: normalizarTipoComisionServicio(data.tipoComision),
         categoria: data.categoria || 'General',
         imagen: data.imagen || data.foto || data.imageUrl || '',
       };
@@ -172,15 +202,16 @@ export async function loadVentasSetup() {
 }
 
 export function createDraftFromServicio(servicio) {
-  const tipo = normalizeCommissionType(servicio.tipoComision);
+  const tipo = normalizarTipoComisionServicio(servicio.tipoComision);
+  const defecto = toNumber(servicio.comisionDefecto);
 
   return {
     servicio,
     cantidad: 1,
     precioUnitario: toNumber(servicio.precioBase),
     comisionTipo: tipo,
-    comisionPct: tipo === 'porcentaje' ? toNumber(servicio.comisionDefecto) : 0,
-    comisionUnitaria: tipo === 'fijo' ? toNumber(servicio.comisionDefecto) : 0,
+    comisionPct: tipo === 'porcentaje' ? defecto : 0,
+    comisionUnitaria: tipo === 'monto_fijo' ? defecto : 0,
   };
 }
 
@@ -189,14 +220,14 @@ export function previewDraft(draft) {
 }
 
 export function createCorteItem(servicio, draft = {}) {
-  const tipo = normalizeCommissionType(draft.comisionTipo || servicio.tipoComision);
+  const tipo = normalizarTipoComisionServicio(draft.comisionTipo || servicio.tipoComision);
   const computed = computeLine({
     cantidad: draft.cantidad ?? 1,
     precioUnitario: draft.precioUnitario ?? servicio.precioBase,
     comisionTipo: tipo,
     comisionPct: draft.comisionPct ?? (tipo === 'porcentaje' ? servicio.comisionDefecto : 0),
     comisionUnitaria:
-      draft.comisionUnitaria ?? (tipo === 'fijo' ? servicio.comisionDefecto : 0),
+      draft.comisionUnitaria ?? (tipo === 'monto_fijo' ? servicio.comisionDefecto : 0),
   });
 
   return {
@@ -256,10 +287,11 @@ export async function saveHistoricoDiario({
     idEmpleado,
     servicio: 'Histórico Diario',
     idServicio: '',
+    cantidad: 1,
     monto,
     montoEsBruto: true,
     tipo: 'historico_diario',
-    comisionTipo: 'fijo',
+    comisionTipo: 'monto_fijo',
     comisionPct: 0,
     comisionMonto: comision,
     utilidadNegocio: roundMoney(monto - comision),

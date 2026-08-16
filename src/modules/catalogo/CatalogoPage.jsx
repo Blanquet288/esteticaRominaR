@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pencil, Plus, Scissors, Search, Sparkles, Trash2, X } from 'lucide-react';
 import { formatMoney } from '../../services/dashboardService';
+import { esComisionMontoFijo } from '../../utils/helpers';
 import useCatalogo from './useCatalogo';
 import './CatalogoPage.css';
 
@@ -33,7 +34,7 @@ function ServiceThumb({ src, alt }) {
 }
 
 function commissionLabel(servicio) {
-  if (servicio.tipoComision === 'fijo') {
+  if (esComisionMontoFijo(servicio.tipoComision)) {
     return `Comisión: ${formatMoney(servicio.comisionDefecto)} fija`;
   }
   return `Comisión: ${servicio.comisionDefecto}%`;
@@ -203,8 +204,8 @@ export default function CatalogoPage() {
                 </button>
                 <button
                   type="button"
-                  className={catalogo.form.tipoComision === 'fijo' ? 'is-active' : ''}
-                  onClick={() => catalogo.updateForm('tipoComision', 'fijo')}
+                  className={esComisionMontoFijo(catalogo.form.tipoComision) ? 'is-active' : ''}
+                  onClick={() => catalogo.updateForm('tipoComision', 'monto_fijo')}
                 >
                   Monto fijo ($)
                 </button>
@@ -212,13 +213,13 @@ export default function CatalogoPage() {
             </div>
 
             <label className="catalogo-field">
-              {catalogo.form.tipoComision === 'fijo'
+              {esComisionMontoFijo(catalogo.form.tipoComision)
                 ? 'Comisión por defecto ($ MXN)'
                 : 'Comisión por defecto (%)'}
               <input
                 type="number"
                 min="0"
-                step={catalogo.form.tipoComision === 'fijo' ? '0.01' : '0.1'}
+                step={esComisionMontoFijo(catalogo.form.tipoComision) ? '0.01' : '0.1'}
                 value={catalogo.form.comisionDefecto}
                 onChange={(event) => catalogo.updateForm('comisionDefecto', event.target.value)}
                 required

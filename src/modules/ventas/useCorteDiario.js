@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toNumber } from '../../services/dashboardService';
+import { esComisionMontoFijo } from '../../utils/helpers';
 import {
   computeLine,
   createCorteItem,
@@ -135,7 +136,7 @@ export default function useCorteDiario() {
           next.precioUnitario = parsed;
         } else if (field === 'comisionPct') {
           next.comisionPct = parsed;
-        } else if (field === 'comisionMonto' && item.comisionTipo === 'fijo') {
+        } else if (field === 'comisionMonto' && esComisionMontoFijo(item.comisionTipo)) {
           const qty = next.cantidad || 1;
           next.comisionUnitaria = qty ? parsed / qty : 0;
         } else if (field === 'monto') {

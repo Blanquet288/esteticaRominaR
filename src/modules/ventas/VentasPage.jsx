@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import { formatMoney, toNumber } from '../../services/dashboardService';
+import { esComisionMontoFijo } from '../../utils/helpers';
 import {
   createDraftFromServicio,
   previewDraft,
@@ -122,7 +123,7 @@ function QuantityModal({ draft, onChange, onClose, onConfirm }) {
               }
             />
           </label>
-          {draft.comisionTipo === 'porcentaje' ? (
+          {!esComisionMontoFijo(draft.comisionTipo) ? (
             <label className="qty-field">
               Comisión %
               <input
@@ -435,7 +436,7 @@ export default function VentasPage() {
                         {item.servicio} × {item.cantidad}
                       </strong>
                       <small>
-                        {item.comisionTipo === 'fijo' ? 'Comisión fija' : 'Comisión %'} ·{' '}
+                        {esComisionMontoFijo(item.comisionTipo) ? 'Comisión fija' : 'Comisión %'} ·{' '}
                         {formatMoney(item.precioUnitario)} c/u
                       </small>
                     </div>
@@ -487,7 +488,7 @@ export default function VentasPage() {
                         }
                       />
                     </label>
-                    {item.comisionTipo === 'porcentaje' ? (
+                    {!esComisionMontoFijo(item.comisionTipo) ? (
                       <label>
                         Comisión %
                         <input

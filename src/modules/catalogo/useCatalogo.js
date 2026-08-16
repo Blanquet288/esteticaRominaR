@@ -7,6 +7,7 @@ import {
   eliminarServicio,
   obtenerServicios,
 } from '../../services/catalogoService';
+import { normalizarTipoComisionServicio } from '../../utils/helpers';
 
 function emptyForm() {
   return {
@@ -100,7 +101,7 @@ export default function useCatalogo() {
       nombre: servicio.nombre,
       categoria: servicio.categoria,
       precioBase: String(servicio.precioBase),
-      tipoComision: servicio.tipoComision,
+      tipoComision: normalizarTipoComisionServicio(servicio.tipoComision),
       comisionDefecto: String(servicio.comisionDefecto),
       imagen: servicio.imagen || '',
     });

@@ -8,7 +8,8 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { toNumber } from './dashboardService';
-import { normalizeCommissionType, roundMoney } from './ventasService';
+import { normalizarTipoComisionServicio } from '../utils/helpers';
+import { roundMoney } from './ventasService';
 
 export const CATEGORIAS_COMUNES = [
   'Cortes',
@@ -28,7 +29,7 @@ function mapServicio(item) {
     nombre: data.nombre || data.servicio || data.titulo || 'Servicio',
     precioBase: toNumber(data.precioBase),
     comisionDefecto: toNumber(data.comisionDefecto),
-    tipoComision: normalizeCommissionType(data.tipoComision),
+    tipoComision: normalizarTipoComisionServicio(data.tipoComision),
     categoria: data.categoria || 'General',
     imagen: data.imagen || data.foto || data.imageUrl || '',
   };
@@ -39,7 +40,7 @@ function payloadFromForm(data) {
     nombre: String(data.nombre || '').trim(),
     precioBase: roundMoney(Number(data.precioBase)),
     comisionDefecto: roundMoney(Number(data.comisionDefecto)),
-    tipoComision: normalizeCommissionType(data.tipoComision),
+    tipoComision: normalizarTipoComisionServicio(data.tipoComision),
     categoria: String(data.categoria || 'General').trim() || 'General',
     imagen: String(data.imagen || '').trim(),
   };
