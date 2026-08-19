@@ -471,6 +471,86 @@
   font-size: 0.75rem;
 }
 
+.rbac-user-actions {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.rbac-user-actions.is-table {
+  min-width: 11.5rem;
+}
+
+.rbac-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  color: #9a3d4a;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #fff;
+  border: 1px solid #edc9ce;
+  border-radius: 0.8rem;
+  cursor: pointer;
+}
+
+.rbac-delete:hover {
+  background: #f8eef0;
+}
+
+.rbac-delete.is-table {
+  width: auto;
+  white-space: nowrap;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.75rem;
+}
+
+.rbac-modal.is-confirm h3 {
+  color: #6b2d35;
+}
+
+.rbac-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+  margin-top: 0.2rem;
+}
+
+.rbac-modal-actions button {
+  min-height: 46px;
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  border: 0;
+  border-radius: 0.8rem;
+  cursor: pointer;
+}
+
+.rbac-modal-actions .is-ghost {
+  color: var(--color-ink);
+  background: #faf7f2;
+  border: 1px solid #e7e0d8;
+}
+
+.rbac-modal-actions .is-primary {
+  color: #fff;
+  background: linear-gradient(135deg, #8a3d4c, #561f2a);
+}
+
+.rbac-modal-actions .is-danger {
+  color: #fff;
+  background: linear-gradient(135deg, #9a3d4a, #5c2430);
+}
+
+.rbac-modal-actions button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
 .rbac-role-note {
   margin: 0;
   padding: 0.65rem 0.75rem;

@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -280,6 +281,11 @@ export async function ensureUsuarioDoc(authUser) {
   const snap = await getDoc(ref);
   if (snap.exists()) return mapUsuario(snap);
 
+  const existingUsers = await getDocs(query(collection(db, 'usuarios'), limit(1)));
+  if (!existingUsers.empty) {
+    throw new Error('Tu cuenta ya no tiene acceso al sistema. Contacta a la administradora.');
+  }
+
   await ensureAdminRoleDoc();
   await setDoc(ref, {
     email: authUser.email || '',
@@ -489,4 +495,60 @@ export async function enviarResetPassword(email) {
     throw new Error('Este usuario no tiene un correo para recuperar la contraseña.');
   }
   await sendPasswordResetEmail(auth, trimmed);
+}
+
+export async function eliminarUsuario(id) {
+  const uid = String(id || '').trim();
+  if (!uid) throw new Error('No se encontró el usuario.');
+  if (auth.currentUser?.uid === uid) {
+    throw new Error('No puedes eliminar tu propia cuenta.');
+  }
+  await deleteDoc(doc(db, 'usuarios', uid));
+}
+
+export async function recrearAccesoUsuario(usuario, password) {
+  const trimmedPassword = String(password || '');
+  const snapshot = {
+    id: String(usuario?.id || '').trim(),
+    nombre: String(usuario?.nombre || '').trim(),
+    email: String(usuario?.email || '').trim().toLowerCase(),
+    rolId: String(usuario?.rolId || '').trim(),
+    activo: usuario?.activo !== false,
+  };
+
+  if (!snapshot.id) throw new Error('No se encontró el usuario.');
+  if (auth.currentUser?.uid === snapshot.id) {
+    throw new Error('No puedes recrear el acceso de tu propia sesión.');
+  }
+  if (!snapshot.nombre) throw new Error('Este usuario no tiene nombre.');
+  if (!snapshot.email) throw new Error('Este usuario no tiene un correo para recrear el acceso.');
+  if (!snapshot.rolId) throw new Error('Este usuario no tiene un rol asignado.');
+  if (trimmedPassword.length < 6) {
+    throw new Error('La contraseña debe tener al menos 6 caracteres.');
+  }
+
+  await deleteDoc(doc(db, 'usuarios', snapshot.id));
+
+  try {
+    await crearUsuarioSistema({
+      nombre: snapshot.nombre,
+      email: snapshot.email,
+      password: trimmedPassword,
+      rolId: snapshot.rolId,
+    });
+  } catch (cause) {
+    await setDoc(doc(db, 'usuarios', snapshot.id), {
+      nombre: snapshot.nombre,
+      email: snapshot.email,
+      rolId: snapshot.rolId,
+      activo: snapshot.activo,
+      ts: serverTimestamp(),
+    });
+    if (String(cause?.message || '').includes('Ya existe una cuenta')) {
+      throw new Error(
+        'El correo ya tiene una cuenta de acceso. Usa restablecer contraseña o elimina esa cuenta en Authentication para poder recrearla.',
+      );
+    }
+    throw cause;
+  }
 }

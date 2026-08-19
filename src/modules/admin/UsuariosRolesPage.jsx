@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { KeyRound, Plus, ShieldCheck, Star, Users, X } from 'lucide-react';
+import { KeyRound, Plus, RefreshCw, ShieldCheck, Star, Trash2, Users, X } from 'lucide-react';
 import useUsuariosRoles from './useUsuariosRoles';
 import './UsuariosRolesPage.css';
 
@@ -198,6 +198,14 @@ export default function UsuariosRolesPage() {
         <UserModal rbac={rbac} onClose={closeModal} />
       ) : null}
 
+      {rbac.modal === 'user-delete' ? (
+        <DeleteUserModal rbac={rbac} onClose={closeModal} />
+      ) : null}
+
+      {rbac.modal === 'user-recreate' ? (
+        <RecreateUserModal rbac={rbac} onClose={closeModal} />
+      ) : null}
+
       {rbac.toast ? <Toast message={rbac.toast} onClose={() => rbac.setToast('')} /> : null}
     </div>
   );
@@ -363,6 +371,138 @@ function UserModal({ rbac, onClose }) {
   );
 }
 
+function UserActions({ rbac, usuario, compact }) {
+  const isSelf = usuario.id === rbac.currentUid;
+
+  return (
+    <div className={`rbac-user-actions ${compact ? 'is-table' : ''}`}>
+      <button
+        type="button"
+        className={`rbac-reset ${compact ? 'is-table' : ''}`}
+        onClick={() => rbac.resetPassword(usuario)}
+        disabled={!usuario.email}
+      >
+        <KeyRound size={compact ? 14 : 15} />
+        Restablecer contraseña
+      </button>
+      <button
+        type="button"
+        className={`rbac-reset ${compact ? 'is-table' : ''}`}
+        onClick={() => rbac.openRecreateUser(usuario)}
+        disabled={!usuario.email || isSelf}
+      >
+        <RefreshCw size={compact ? 14 : 15} />
+        {compact ? 'Recrear acceso' : 'Cambiar Contraseña / Recrear acceso'}
+      </button>
+      {isSelf ? null : (
+        <button
+          type="button"
+          className={`rbac-delete ${compact ? 'is-table' : ''}`}
+          onClick={() => rbac.openDeleteUser(usuario)}
+        >
+          <Trash2 size={compact ? 14 : 15} />
+          Eliminar
+        </button>
+      )}
+    </div>
+  );
+}
+
+function DeleteUserModal({ rbac, onClose }) {
+  const usuario = rbac.targetUsuario;
+  const label = [usuario?.nombre, usuario?.email].filter(Boolean).join(' / ') || 'este usuario';
+
+  return (
+    <div className="rbac-overlay" onClick={onClose} role="presentation">
+      <div
+        className="rbac-modal is-confirm"
+        role="dialog"
+        aria-modal="true"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button type="button" className="rbac-close" onClick={onClose} aria-label="Cerrar">
+          <X size={18} />
+        </button>
+        <p className="rbac-kicker">Advertencia</p>
+        <h3>¿Eliminar acceso de usuario?</h3>
+        <p>
+          Estás a punto de eliminar la cuenta de <strong>{label}</strong>. El usuario perderá acceso
+          inmediato al sistema.
+        </p>
+        {rbac.error ? <p className="rbac-error">{rbac.error}</p> : null}
+        <div className="rbac-modal-actions">
+          <button type="button" className="is-ghost" onClick={onClose} disabled={rbac.saving}>
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className="is-danger"
+            onClick={rbac.confirmDeleteUser}
+            disabled={rbac.saving}
+          >
+            {rbac.saving ? 'Eliminando…' : 'Sí, eliminar usuario'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RecreateUserModal({ rbac, onClose }) {
+  const usuario = rbac.targetUsuario;
+
+  return (
+    <div className="rbac-overlay" onClick={onClose} role="presentation">
+      <div
+        className="rbac-modal"
+        role="dialog"
+        aria-modal="true"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button type="button" className="rbac-close" onClick={onClose} aria-label="Cerrar">
+          <X size={18} />
+        </button>
+        <p className="rbac-kicker">Acceso temporal</p>
+        <h3>Cambiar contraseña / Recrear acceso</h3>
+        <p>
+          Escribe una contraseña temporal para {usuario?.nombre || 'este usuario'}. Se mantiene el
+          mismo nombre, correo y rol.
+        </p>
+        <p className="rbac-role-note">
+          {usuario?.email || 'Sin correo'} · {usuario?.nombre || 'Usuario'}
+        </p>
+
+        {rbac.error ? <p className="rbac-error">{rbac.error}</p> : null}
+
+        <label className="rbac-field">
+          Nueva contraseña temporal
+          <input
+            type="password"
+            value={rbac.accessPassword}
+            onChange={(event) => rbac.setAccessPassword(event.target.value)}
+            placeholder="Mínimo 6 caracteres"
+            required
+          />
+        </label>
+
+        <div className="rbac-modal-actions">
+          <button type="button" className="is-ghost" onClick={onClose} disabled={rbac.saving}>
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className="is-primary"
+            onClick={rbac.confirmRecreateUser}
+            disabled={rbac.saving}
+          >
+            {rbac.saving ? 'Guardando…' : 'Recrear acceso'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function roleName(rbac, rolId) {
   return rbac.rolesMap[rolId]?.nombre || rolId || 'Sin rol';
 }
@@ -422,15 +562,7 @@ function UsuariosTab({ rbac }) {
               </div>
             </div>
             <RoleSelect rbac={rbac} usuario={item} />
-            <button
-              type="button"
-              className="rbac-reset"
-              onClick={() => rbac.resetPassword(item)}
-              disabled={!item.email}
-            >
-              <KeyRound size={15} />
-              Restablecer contraseña
-            </button>
+            <UserActions rbac={rbac} usuario={item} />
           </article>
         ))}
       </div>
@@ -468,15 +600,7 @@ function UsuariosTab({ rbac }) {
                     </button>
                   </td>
                   <td>
-                    <button
-                      type="button"
-                      className="rbac-reset is-table"
-                      onClick={() => rbac.resetPassword(item)}
-                      disabled={!item.email}
-                    >
-                      <KeyRound size={14} />
-                      Restablecer contraseña
-                    </button>
+                    <UserActions rbac={rbac} usuario={item} compact />
                   </td>
                 </tr>
               ))}

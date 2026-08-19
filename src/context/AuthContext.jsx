@@ -73,7 +73,11 @@ export function AuthProvider({ children }) {
         unsubUserRef.current = subscribeUsuario(
           currentUser.uid,
           (nextProfile) => {
-            if (!nextProfile) return;
+            if (!nextProfile) {
+              setAccessError('Tu cuenta fue eliminada. Contacta a la administradora.');
+              signOut(auth);
+              return;
+            }
             if (nextProfile.activo === false) {
               setAccessError('Tu cuenta está inactiva. Contacta a la administradora.');
               signOut(auth);
@@ -91,12 +95,9 @@ export function AuthProvider({ children }) {
           (cause) => setAccessError(cause?.message || 'No se pudo cargar el usuario.'),
         );
       } catch (cause) {
-        setUser(currentUser);
-        setProfile(null);
-        setRole(null);
-        setUserPermissions(emptyPermisos());
         setAccessError(cause?.message || 'No se pudo cargar el acceso.');
         setLoading(false);
+        await signOut(auth);
       }
     });
 

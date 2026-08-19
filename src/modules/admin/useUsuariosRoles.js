@@ -5,12 +5,14 @@ import {
   actualizarUsuario,
   crearRol,
   crearUsuarioSistema,
+  eliminarUsuario,
   emptyPermisos,
   enviarResetPassword,
   patchBloque,
   patchModulo,
   patchNode,
   PERMISOS_MODULOS,
+  recrearAccesoUsuario,
   subscribeRoles,
   subscribeUsuarios,
 } from '../../services/rbacService';
@@ -41,6 +43,8 @@ export default function useUsuariosRoles() {
   const [form, setForm] = useState(EMPTY_ROL_FORM);
   const [userForm, setUserForm] = useState(EMPTY_USER_FORM);
   const [editingRolId, setEditingRolId] = useState('');
+  const [targetUsuario, setTargetUsuario] = useState(null);
+  const [accessPassword, setAccessPassword] = useState('');
 
   useEffect(() => {
     let rolesReady = false;
@@ -125,6 +129,8 @@ export default function useUsuariosRoles() {
     setEditingRolId('');
     setForm(EMPTY_ROL_FORM);
     setUserForm(EMPTY_USER_FORM);
+    setTargetUsuario(null);
+    setAccessPassword('');
     setError('');
   }, []);
 
@@ -149,6 +155,19 @@ export default function useUsuariosRoles() {
     });
     setModal('user-create');
   }, [roles]);
+
+  const openDeleteUser = useCallback((usuario) => {
+    setError('');
+    setTargetUsuario(usuario);
+    setModal('user-delete');
+  }, []);
+
+  const openRecreateUser = useCallback((usuario) => {
+    setError('');
+    setAccessPassword('');
+    setTargetUsuario(usuario);
+    setModal('user-recreate');
+  }, []);
 
   const saveRol = async () => {
     setSaving(true);
@@ -250,6 +269,42 @@ export default function useUsuariosRoles() {
     }
   };
 
+  const confirmDeleteUser = async () => {
+    if (!targetUsuario) return;
+    if (targetUsuario.id === user?.uid) {
+      setError('No puedes eliminar tu propia cuenta.');
+      return;
+    }
+
+    setSaving(true);
+    setError('');
+    try {
+      await eliminarUsuario(targetUsuario.id);
+      showToast(`Se eliminó el acceso de ${targetUsuario.nombre}.`);
+      closeModal();
+    } catch (cause) {
+      setError(cause?.message || 'No se pudo eliminar el usuario.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const confirmRecreateUser = async () => {
+    if (!targetUsuario) return;
+
+    setSaving(true);
+    setError('');
+    try {
+      await recrearAccesoUsuario(targetUsuario, accessPassword);
+      showToast(`Se recreó el acceso de ${targetUsuario.nombre}.`);
+      closeModal();
+    } catch (cause) {
+      setError(cause?.message || 'No se pudo recrear el acceso.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return {
     tab,
     setTab,
@@ -264,6 +319,9 @@ export default function useUsuariosRoles() {
     modal,
     form,
     userForm,
+    targetUsuario,
+    accessPassword,
+    setAccessPassword,
     updateForm,
     updateUserForm,
     toggleFormPermiso,
@@ -272,9 +330,13 @@ export default function useUsuariosRoles() {
     openCreateRol,
     openEditRol,
     openCreateUser,
+    openDeleteUser,
+    openRecreateUser,
     closeModal,
     saveRol,
     saveUsuario,
+    confirmDeleteUser,
+    confirmRecreateUser,
     editingRol,
     togglePermiso,
     setModulo,
