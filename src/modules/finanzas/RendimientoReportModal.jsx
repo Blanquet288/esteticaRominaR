@@ -31,6 +31,7 @@ export default function RendimientoReportModal({
   view,
   selectedIds,
   search,
+  allowedViews,
   onScope,
   onFormat,
   onView,
@@ -47,6 +48,7 @@ export default function RendimientoReportModal({
   });
 
   const canPrint = selectedIds.length > 0;
+  const visibleViews = VIEWS.filter((item) => !allowedViews?.length || allowedViews.includes(item.id));
 
   return (
     <div className="rend-overlay no-print" onClick={onClose} role="presentation">
@@ -129,22 +131,24 @@ export default function RendimientoReportModal({
           </div>
         ) : null}
 
-        <div className="report-block">
-          <span>Tipo de contenido</span>
-          <div className="report-options">
-            {VIEWS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={view === item.id ? 'is-active' : ''}
-                onClick={() => onView(item.id)}
-              >
-                <strong>{item.label}</strong>
-                <small>{item.hint}</small>
-              </button>
-            ))}
+        {visibleViews.length > 1 ? (
+          <div className="report-block">
+            <span>Tipo de contenido</span>
+            <div className="report-options">
+              {visibleViews.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={view === item.id ? 'is-active' : ''}
+                  onClick={() => onView(item.id)}
+                >
+                  <strong>{item.label}</strong>
+                  <small>{item.hint}</small>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <div className="report-block">
           <span>Formato de reporte</span>

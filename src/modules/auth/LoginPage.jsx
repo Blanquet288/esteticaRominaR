@@ -19,7 +19,7 @@ function getAuthErrorMessage(error) {
 }
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, accessError } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -39,6 +39,8 @@ export default function LoginPage() {
       setSubmitting(false);
     }
   };
+
+  const formError = error || accessError;
 
   return (
     <div className="login-screen">
@@ -155,7 +157,7 @@ export default function LoginPage() {
               </div>
             </label>
 
-            {error ? <p className="form-error">{error}</p> : null}
+            {formError ? <p className="form-error">{formError}</p> : null}
 
             <button type="submit" className="login-submit" disabled={submitting}>
               {submitting ? 'Ingresando…' : 'Entrar al panel'}

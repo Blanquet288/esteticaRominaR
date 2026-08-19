@@ -10,13 +10,14 @@ import './MainLayout.css';
 const DESKTOP_QUERY = '(min-width: 961px)';
 
 export default function MainLayout() {
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const location = useLocation();
   const [isDesktop, setIsDesktop] = useState(() => window.matchMedia(DESKTOP_QUERY).matches);
   const [sidebarOpen, setSidebarOpen] = useState(() => window.matchMedia(DESKTOP_QUERY).matches);
 
   const pageTitle = getPageTitle(location.pathname);
-  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Equipo';
+  const displayName =
+    profile?.nombre || user?.displayName || user?.email?.split('@')[0] || 'Equipo';
   const initial = displayName.charAt(0).toUpperCase();
 
   useEffect(() => {

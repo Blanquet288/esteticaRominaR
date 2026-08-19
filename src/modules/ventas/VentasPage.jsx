@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { formatMoney, toNumber } from '../../services/dashboardService';
 import { esComisionMontoFijo } from '../../utils/helpers';
+import { useAuth } from '../../context/AuthContext';
 import {
   createDraftFromServicio,
   previewDraft,
@@ -202,8 +203,16 @@ function VentasSkeleton() {
 
 export default function VentasPage() {
   const corte = useCorteDiario();
+  const { hasPermission } = useAuth();
   const [popId, setPopId] = useState('');
   const [draft, setDraft] = useState(null);
+  const canRapida = hasPermission('ventas_rapida');
+  const canCorte = hasPermission('ventas_corte_empleada');
+
+  useEffect(() => {
+    if (canCorte && !canRapida) corte.changeMode('corte');
+    else if (canRapida && !canCorte) corte.changeMode('historico');
+  }, [canRapida, canCorte, corte.changeMode]);
 
   const openQuantityModal = (servicio) => {
     setPopId(servicio.id);
@@ -220,12 +229,24 @@ export default function VentasPage() {
     return <VentasSkeleton />;
   }
 
+  if (!canRapida && !canCorte) {
+    return (
+      <div className="ventas-page">
+        <header className="ventas-hero">
+          <p className="ventas-kicker">Registro de ventas</p>
+          <h2>Registrar ventas</h2>
+          <p>Tu rol puede entrar a este módulo, pero no tiene una modalidad de registro asignada.</p>
+        </header>
+      </div>
+    );
+  }
+
   return (
     <div className="ventas-page">
       <header className="ventas-hero">
         <p className="ventas-kicker">Registro de ventas</p>
         <h2>
-          {corte.mode === 'historico' ? 'Histórico diario' : 'Corte diario por empleada'}
+          {corte.mode === 'historico' ? 'Venta rápida' : 'Corte masivo por empleada'}
         </h2>
         <p>
           {corte.mode === 'historico'
@@ -234,26 +255,28 @@ export default function VentasPage() {
         </p>
       </header>
 
-      <nav className="ventas-modes" aria-label="Modalidad de registro">
-        <button
-          type="button"
-          className={`mode-tab ${corte.mode === 'corte' ? 'is-active' : ''}`}
-          onClick={() => corte.changeMode('corte')}
-          aria-pressed={corte.mode === 'corte'}
-        >
-          <Scissors size={14} />
-          Corte Diario
-        </button>
-        <button
-          type="button"
-          className={`mode-tab ${corte.mode === 'historico' ? 'is-active' : ''}`}
-          onClick={() => corte.changeMode('historico')}
-          aria-pressed={corte.mode === 'historico'}
-        >
-          <Banknote size={14} />
-          Histórico
-        </button>
-      </nav>
+      {canRapida && canCorte ? (
+        <nav className="ventas-modes" aria-label="Modalidad de registro">
+          <button
+            type="button"
+            className={`mode-tab ${corte.mode === 'historico' ? 'is-active' : ''}`}
+            onClick={() => corte.changeMode('historico')}
+            aria-pressed={corte.mode === 'historico'}
+          >
+            <Banknote size={14} />
+            Venta rápida
+          </button>
+          <button
+            type="button"
+            className={`mode-tab ${corte.mode === 'corte' ? 'is-active' : ''}`}
+            onClick={() => corte.changeMode('corte')}
+            aria-pressed={corte.mode === 'corte'}
+          >
+            <Scissors size={14} />
+            Corte masivo
+          </button>
+        </nav>
+      ) : null}
 
       <section className="ventas-toolbar">
         <label className="field-block">

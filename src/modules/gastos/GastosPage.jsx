@@ -10,6 +10,7 @@ import {
   X,
 } from 'lucide-react';
 import { formatMoney } from '../../services/dashboardService';
+import { useAuth } from '../../context/AuthContext';
 import { GASTO_CATEGORIAS } from '../../services/gastosService';
 import useGastos from './useGastos';
 import './GastosPage.css';
@@ -50,6 +51,9 @@ function formatTableDate(value) {
 
 export default function GastosPage() {
   const gastos = useGastos();
+  const { hasPermission } = useAuth();
+  const canCreate = hasPermission('gastos_crear');
+  const canDelete = hasPermission('gastos_eliminar');
 
   useEffect(() => {
     if (!gastos.modalOpen && !gastos.confirmId) return undefined;
@@ -75,10 +79,12 @@ export default function GastosPage() {
           <h2>Gastos del mes</h2>
           <p>Registra fijos y operativos, y asígnalos a la semana en que se descontarán.</p>
         </div>
-        <button type="button" className="gastos-add is-header" onClick={gastos.openCreate}>
-          <Plus size={16} />
-          Registrar gasto
-        </button>
+        {canCreate ? (
+          <button type="button" className="gastos-add is-header" onClick={gastos.openCreate}>
+            <Plus size={16} />
+            Registrar gasto
+          </button>
+        ) : null}
       </header>
 
       <section className="month-nav" aria-label="Mes y año">
@@ -140,10 +146,12 @@ export default function GastosPage() {
         ))}
       </section>
 
-      <button type="button" className="gastos-add is-inline" onClick={gastos.openCreate}>
-        <Plus size={16} />
-        Registrar nuevo gasto
-      </button>
+      {canCreate ? (
+        <button type="button" className="gastos-add is-inline" onClick={gastos.openCreate}>
+          <Plus size={16} />
+          Registrar nuevo gasto
+        </button>
+      ) : null}
 
       <section className="gastos-table-card">
         {gastos.loading ? (
@@ -158,7 +166,7 @@ export default function GastosPage() {
                   <th>Categoría</th>
                   <th>Semana</th>
                   <th>Monto</th>
-                  <th>Acciones</th>
+                  {canCreate || canDelete ? <th>Acciones</th> : null}
                 </tr>
               </thead>
               <tbody>
@@ -175,24 +183,30 @@ export default function GastosPage() {
                       <span className="badge badge-week">Semana {item.semanaAsignada}</span>
                     </td>
                     <td className="is-money">{formatMoney(item.monto)}</td>
-                    <td>
-                      <div className="row-actions">
-                        <button
-                          type="button"
-                          onClick={() => gastos.openEdit(item)}
-                          aria-label="Editar gasto"
-                        >
-                          <Pencil size={14} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => gastos.setConfirmId(item.id)}
-                          aria-label="Eliminar gasto"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                    </td>
+                    {canCreate || canDelete ? (
+                      <td>
+                        <div className="row-actions">
+                          {canCreate ? (
+                            <button
+                              type="button"
+                              onClick={() => gastos.openEdit(item)}
+                              aria-label="Editar gasto"
+                            >
+                              <Pencil size={14} />
+                            </button>
+                          ) : null}
+                          {canDelete ? (
+                            <button
+                              type="button"
+                              onClick={() => gastos.setConfirmId(item.id)}
+                              aria-label="Eliminar gasto"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          ) : null}
+                        </div>
+                      </td>
+                    ) : null}
                   </tr>
                 ))}
               </tbody>

@@ -44,6 +44,10 @@
   gap: 1rem;
 }
 
+.kpi-grid[data-count="1"] {
+  max-width: 28rem;
+}
+
 .kpi-card {
   display: grid;
   gap: 0.35rem;
@@ -297,17 +301,30 @@
 
 @media (min-width: 720px) {
   .kpi-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpi-grid[data-count="1"] {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 28rem;
   }
 }
 
 @media (min-width: 1100px) {
-  .kpi-grid {
-    grid-template-columns: repeat(4, 1fr);
+  .kpi-grid[data-count="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .kpi-grid[data-count="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .charts-grid {
     grid-template-columns: 1.2fr 0.8fr;
+  }
+
+  .charts-grid[data-count="1"] {
+    grid-template-columns: 1fr;
   }
 
   .chart-frame {

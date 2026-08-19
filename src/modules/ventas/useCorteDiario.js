@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toNumber } from '../../services/dashboardService';
 import { esComisionMontoFijo } from '../../utils/helpers';
 import {
@@ -113,10 +113,10 @@ export default function useCorteDiario() {
     toNumber(montoTotal) - toNumber(comisionHistorico),
   );
 
-  const changeMode = (nextMode) => {
+  const changeMode = useCallback((nextMode) => {
     setError('');
     setMode(nextMode);
-  };
+  }, []);
 
   const addServicio = (servicio, draft = {}) => {
     setItems((current) => [...current, createCorteItem(servicio, draft)]);

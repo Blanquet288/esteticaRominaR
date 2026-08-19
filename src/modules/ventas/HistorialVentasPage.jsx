@@ -11,6 +11,7 @@ import {
   X,
 } from 'lucide-react';
 import { formatMoney, toNumber } from '../../services/dashboardService';
+import { useAuth } from '../../context/AuthContext';
 import { roundMoney } from '../../services/ventasService';
 import useHistorialVentas from './useHistorialVentas';
 import './HistorialVentasPage.css';
@@ -57,6 +58,8 @@ function HistorialSkeleton() {
 
 export default function HistorialVentasPage() {
   const hist = useHistorialVentas();
+  const { hasPermission } = useAuth();
+  const canCancel = hasPermission('ventas_cancelar');
   const currentYear = new Date().getFullYear();
   const years = Array.from(
     new Set([...Array.from({ length: 7 }, (_, index) => currentYear - 3 + index), hist.year]),
@@ -194,22 +197,24 @@ export default function HistorialVentasPage() {
                                   {formatMoney(item.utilidadNegocio)}
                                 </small>
                               </div>
-                              <div className="venta-actions">
-                                <button
-                                  type="button"
-                                  onClick={() => hist.openEdit(item)}
-                                  aria-label="Editar venta"
-                                >
-                                  <Pencil size={14} />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => hist.setConfirmId(item.id)}
-                                  aria-label="Eliminar venta"
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </div>
+                              {canCancel ? (
+                                <div className="venta-actions">
+                                  <button
+                                    type="button"
+                                    onClick={() => hist.openEdit(item)}
+                                    aria-label="Editar venta"
+                                  >
+                                    <Pencil size={14} />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => hist.setConfirmId(item.id)}
+                                    aria-label="Eliminar venta"
+                                  >
+                                    <Trash2 size={14} />
+                                  </button>
+                                </div>
+                              ) : null}
                             </li>
                           ))}
                         </ul>

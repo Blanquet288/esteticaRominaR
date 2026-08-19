@@ -18,6 +18,7 @@ import {
   telefonoHref,
   whatsappHref,
 } from '../../services/empleadosService';
+import { useAuth } from '../../context/AuthContext';
 import useEmpleados from './useEmpleados';
 import './EmpleadosPage.css';
 
@@ -43,6 +44,9 @@ function roleClass(rol) {
 
 export default function EmpleadosPage() {
   const empleados = useEmpleados();
+  const { hasPermission } = useAuth();
+  const canEdit = hasPermission('emp_crear_editar');
+  const canDelete = hasPermission('emp_eliminar');
   const turnoEntries = Object.entries(empleados.turnos);
 
   useEffect(() => {
@@ -73,14 +77,18 @@ export default function EmpleadosPage() {
           <p>Gestiona roles, comisiones y el horario semanal de cada integrante.</p>
         </div>
         <div className="empleados-hero-actions">
-          <button type="button" className="empleados-add is-ghost is-header" onClick={() => empleados.openAsistencia()}>
-            <CalendarOff size={16} />
-            Registrar inasistencia
-          </button>
-          <button type="button" className="empleados-add is-header" onClick={empleados.openCreate}>
-            <Plus size={16} />
-            Nuevo empleado
-          </button>
+          {canEdit ? (
+            <>
+              <button type="button" className="empleados-add is-ghost is-header" onClick={() => empleados.openAsistencia()}>
+                <CalendarOff size={16} />
+                Registrar inasistencia
+              </button>
+              <button type="button" className="empleados-add is-header" onClick={empleados.openCreate}>
+                <Plus size={16} />
+                Nuevo empleado
+              </button>
+            </>
+          ) : null}
         </div>
       </header>
 
@@ -94,16 +102,18 @@ export default function EmpleadosPage() {
         />
       </label>
 
-      <div className="empleados-inline-actions">
-        <button type="button" className="empleados-add is-ghost is-inline" onClick={() => empleados.openAsistencia()}>
-          <CalendarOff size={16} />
-          Registrar inasistencia
-        </button>
-        <button type="button" className="empleados-add is-inline" onClick={empleados.openCreate}>
-          <Plus size={16} />
-          Nuevo empleado
-        </button>
-      </div>
+      {canEdit ? (
+        <div className="empleados-inline-actions">
+          <button type="button" className="empleados-add is-ghost is-inline" onClick={() => empleados.openAsistencia()}>
+            <CalendarOff size={16} />
+            Registrar inasistencia
+          </button>
+          <button type="button" className="empleados-add is-inline" onClick={empleados.openCreate}>
+            <Plus size={16} />
+            Nuevo empleado
+          </button>
+        </div>
+      ) : null}
 
       {empleados.error ? <p className="empleados-error">{empleados.error}</p> : null}
 
@@ -164,20 +174,28 @@ export default function EmpleadosPage() {
                   ))}
                 </div>
 
-                <div className="empleado-actions">
-                  <button type="button" onClick={() => empleados.openEdit(item)}>
-                    <Pencil size={14} />
-                    Editar
-                  </button>
-                  <button type="button" onClick={() => empleados.openAsistencia(item)}>
-                    <CalendarOff size={14} />
-                    Falta
-                  </button>
-                  <button type="button" onClick={() => empleados.openConfirm(item)}>
-                    <Trash2 size={14} />
-                    Eliminar
-                  </button>
-                </div>
+                {canEdit || canDelete ? (
+                  <div className="empleado-actions">
+                    {canEdit ? (
+                      <>
+                        <button type="button" onClick={() => empleados.openEdit(item)}>
+                          <Pencil size={14} />
+                          Editar
+                        </button>
+                        <button type="button" onClick={() => empleados.openAsistencia(item)}>
+                          <CalendarOff size={14} />
+                          Falta
+                        </button>
+                      </>
+                    ) : null}
+                    {canDelete ? (
+                      <button type="button" onClick={() => empleados.openConfirm(item)}>
+                        <Trash2 size={14} />
+                        Eliminar
+                      </button>
+                    ) : null}
+                  </div>
+                ) : null}
               </article>
             );
           })}

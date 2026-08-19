@@ -11,11 +11,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Printer,
+  ShieldOff,
   Sparkles,
   TrendingUp,
   Users,
 } from 'lucide-react';
 import { formatMoney } from '../../services/dashboardService';
+import { useAuth } from '../../context/AuthContext';
+import '../../components/ui/ModulePlaceholder.css';
 import RendimientoPrint from './RendimientoPrint';
 import RendimientoReportModal from './RendimientoReportModal';
 import useRendimiento from './useRendimiento';
@@ -80,13 +83,17 @@ function RendimientoSkeleton() {
 
 export default function RendimientoPage() {
   const data = useRendimiento();
+  const { hasPermission } = useAuth();
+  const canIncentivos = hasPermission('rendimiento_vista_incentivos');
+  const canAdmin = hasPermission('rendimiento_vista_admin');
+  const canBothViews = canIncentivos && canAdmin;
   const [reportOpen, setReportOpen] = useState(false);
   const [printReady, setPrintReady] = useState(false);
   const [scope, setScope] = useState('equipo');
   const [format, setFormat] = useState('recibos');
   const [selectedIds, setSelectedIds] = useState([]);
   const [search, setSearch] = useState('');
-  const [view, setView] = useState('admin');
+  const [view, setView] = useState(() => (canAdmin ? 'admin' : 'incentivos'));
   const incentives = view === 'incentivos';
   const currentYear = new Date().getFullYear();
   const years = Array.from(
@@ -158,6 +165,11 @@ export default function RendimientoPage() {
   }, [printReady]);
 
   useEffect(() => {
+    if (view === 'admin' && !canAdmin && canIncentivos) setView('incentivos');
+    if (view === 'incentivos' && !canIncentivos && canAdmin) setView('admin');
+  }, [view, canAdmin, canIncentivos]);
+
+  useEffect(() => {
     if (!reportOpen) return undefined;
     const onKey = (event) => {
       if (event.key === 'Escape') setReportOpen(false);
@@ -165,6 +177,18 @@ export default function RendimientoPage() {
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [reportOpen]);
+
+  if (!canIncentivos && !canAdmin) {
+    return (
+      <section className="module-placeholder">
+        <div className="placeholder-icon">
+          <ShieldOff size={28} />
+        </div>
+        <h3>Acceso no autorizado</h3>
+        <p>Tu rol puede entrar a Finanzas, pero no tiene una vista de rendimiento asignada.</p>
+      </section>
+    );
+  }
 
   if (data.loading) {
     return <RendimientoSkeleton />;
@@ -193,22 +217,24 @@ export default function RendimientoPage() {
         </button>
       </header>
 
-      <nav className="view-toggle no-print" aria-label="Tipo de vista">
-        <button
-          type="button"
-          className={incentives ? 'is-active' : ''}
-          onClick={() => setView('incentivos')}
-        >
-          Vista incentivos
-        </button>
-        <button
-          type="button"
-          className={!incentives ? 'is-active' : ''}
-          onClick={() => setView('admin')}
-        >
-          Vista administrativa
-        </button>
-      </nav>
+      {canBothViews ? (
+        <nav className="view-toggle no-print" aria-label="Tipo de vista">
+          <button
+            type="button"
+            className={incentives ? 'is-active' : ''}
+            onClick={() => setView('incentivos')}
+          >
+            Vista incentivos
+          </button>
+          <button
+            type="button"
+            className={!incentives ? 'is-active' : ''}
+            onClick={() => setView('admin')}
+          >
+            Vista administrativa
+          </button>
+        </nav>
+      ) : null}
 
       <section className="month-nav no-print" aria-label="Mes y año">
         <button type="button" onClick={() => data.shiftMonth(-1)} aria-label="Mes anterior">
@@ -447,6 +473,10 @@ export default function RendimientoPage() {
           view={view}
           selectedIds={selectedIds}
           search={search}
+          allowedViews={[
+            canIncentivos ? 'incentivos' : null,
+            canAdmin ? 'admin' : null,
+          ].filter(Boolean)}
           onScope={changeScope}
           onFormat={setFormat}
           onView={setView}

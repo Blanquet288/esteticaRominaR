@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
   Banknote,
@@ -11,12 +11,14 @@ import {
   PiggyBank,
   Scissors,
   Settings,
+  ShieldCheck,
   Sparkles,
   TrendingUp,
   UserCheck,
   Wallet,
   X,
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import logoRomina from '../../assets/RominaLetras.png';
 
 export const NAV_SECTIONS = [
@@ -24,16 +26,35 @@ export const NAV_SECTIONS = [
     id: 'principal',
     label: 'Principal',
     type: 'links',
-    items: [{ path: '/', label: 'Dashboard', icon: LayoutDashboard, end: true }],
+    items: [
+      {
+        path: '/',
+        label: 'Dashboard',
+        icon: LayoutDashboard,
+        end: true,
+        permission: 'dashboard',
+      },
+    ],
   },
   {
     id: 'operacion',
     label: 'Operación diaria',
     type: 'links',
     items: [
-      { path: '/ventas', label: 'Registrar ventas', icon: Scissors, end: true },
-      { path: '/gastos', label: 'Gastos', icon: Wallet },
-      { path: '/ventas/historial', label: 'Historial de ventas', icon: History },
+      {
+        path: '/ventas',
+        label: 'Registrar ventas',
+        icon: Scissors,
+        end: true,
+        permission: 'ventas',
+      },
+      { path: '/gastos', label: 'Gastos', icon: Wallet, permission: 'gastos' },
+      {
+        path: '/ventas/historial',
+        label: 'Historial de ventas',
+        icon: History,
+        permission: 'historial_ventas',
+      },
     ],
   },
   {
@@ -41,11 +62,41 @@ export const NAV_SECTIONS = [
     label: 'Finanzas y cierres',
     type: 'accordion',
     items: [
-      { path: '/finanzas/rendimiento', label: 'Rendimiento por empleada', icon: TrendingUp },
-      { path: '/ahorro', label: 'Fondo de ahorro', icon: PiggyBank },
-      { path: '/finanzas/cierre', label: 'Cierre mensual', icon: Calculator },
-      { path: '/finanzas/anual', label: 'Métricas y Reporte Anual', icon: BarChart3 },
-      { path: '/finanzas/calculadora', label: 'Calculadora de billetes', icon: Banknote },
+      {
+        path: '/finanzas/rendimiento',
+        label: 'Rendimiento por personal',
+        icon: TrendingUp,
+        module: 'finanzas',
+        permission: 'finanzas_rendimiento',
+      },
+      {
+        path: '/ahorro',
+        label: 'Fondo de ahorro',
+        icon: PiggyBank,
+        module: 'finanzas',
+        permission: 'finanzas_ahorro_movs',
+      },
+      {
+        path: '/finanzas/cierre',
+        label: 'Cierre mensual',
+        icon: Calculator,
+        module: 'finanzas',
+        permission: 'finanzas_cierre_mensual',
+      },
+      {
+        path: '/finanzas/anual',
+        label: 'Métricas y Reporte Anual',
+        icon: BarChart3,
+        module: 'finanzas',
+        permission: 'finanzas_reporte_anual',
+      },
+      {
+        path: '/finanzas/calculadora',
+        label: 'Calculadora de billetes',
+        icon: Banknote,
+        module: 'finanzas',
+        permission: 'finanzas_cierre_mensual',
+      },
     ],
   },
   {
@@ -53,12 +104,25 @@ export const NAV_SECTIONS = [
     label: 'Administración',
     type: 'accordion',
     items: [
-      { path: '/catalogo', label: 'Catálogo de servicios', icon: Sparkles },
-      { path: '/empleados', label: 'Empleadas', icon: UserCheck },
-      { path: '/configuracion', label: 'Configuración', icon: Settings },
+      { path: '/catalogo', label: 'Catálogo de servicios', icon: Sparkles, permission: 'catalogo' },
+      { path: '/empleados', label: 'Empleadas', icon: UserCheck, permission: 'empleados' },
+      { path: '/configuracion', label: 'Configuración', icon: Settings, permission: 'configuracion' },
+      {
+        path: '/admin/usuarios',
+        label: 'Usuarios y roles',
+        icon: ShieldCheck,
+        permission: 'usuarios_roles',
+      },
     ],
   },
 ];
+
+export function navItemAllowed(item, hasPermission, hasAnyPermission) {
+  if (item.module && !hasPermission(item.module)) return false;
+  if (item.anyOf?.length) return hasAnyPermission(item.anyOf);
+  if (item.permission) return hasPermission(item.permission);
+  return true;
+}
 
 const ALL_NAV_ITEMS = NAV_SECTIONS.flatMap((section) => section.items);
 
@@ -107,10 +171,22 @@ export default function Sidebar({
   onLogout,
 }) {
   const location = useLocation();
+  const { hasPermission, hasAnyPermission } = useAuth();
   const [openGroups, setOpenGroups] = useState(() => {
     const active = groupForPath(location.pathname);
     return { finanzas: active === 'finanzas', admin: active === 'admin' };
   });
+
+  const visibleSections = useMemo(
+    () =>
+      NAV_SECTIONS.map((section) => ({
+        ...section,
+        items: section.items.filter((item) =>
+          navItemAllowed(item, hasPermission, hasAnyPermission),
+        ),
+      })).filter((section) => section.items.length > 0),
+    [hasPermission, hasAnyPermission],
+  );
 
   useEffect(() => {
     const active = groupForPath(location.pathname);
@@ -138,7 +214,7 @@ export default function Sidebar({
       </div>
 
       <nav className="sidebar-nav" aria-label="Principal">
-        {NAV_SECTIONS.map((section) => {
+        {visibleSections.map((section) => {
           const isAccordion = section.type === 'accordion';
           const isOpen = !isAccordion || Boolean(openGroups[section.id]);
 

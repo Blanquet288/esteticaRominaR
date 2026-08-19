@@ -176,15 +176,20 @@ function buildServiceBreakdown(ventas, catalog) {
   };
 }
 
-export async function loadDashboardData(now = new Date()) {
+export async function loadDashboardData(now = new Date(), options = {}) {
+  const includeGastos = options.includeGastos !== false;
+  const includeAhorro = options.includeAhorro !== false;
+  const includeVentas = options.includeVentas !== false;
+  const includeCatalog = options.includeCatalog !== false;
+
   const start = new Date(now.getFullYear(), now.getMonth(), 1);
   const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
   const [ventas, gastos, ahorroSnap, catalog] = await Promise.all([
-    fetchMonthDocs('ventas', start, end),
-    fetchMonthDocs('gastos', start, end),
-    getDoc(doc(db, 'ahorro', 'main')).catch(() => null),
-    fetchCatalogMap(),
+    includeVentas ? fetchMonthDocs('ventas', start, end) : Promise.resolve([]),
+    includeGastos ? fetchMonthDocs('gastos', start, end) : Promise.resolve([]),
+    includeAhorro ? getDoc(doc(db, 'ahorro', 'main')).catch(() => null) : Promise.resolve(null),
+    includeCatalog ? fetchCatalogMap() : Promise.resolve({}),
   ]);
 
   const totalVentas = ventas.reduce((sum, item) => sum + toNumber(item.monto), 0);

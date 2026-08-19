@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pencil, Plus, Scissors, Search, Sparkles, Trash2, X } from 'lucide-react';
 import { formatMoney } from '../../services/dashboardService';
+import { useAuth } from '../../context/AuthContext';
 import { esComisionMontoFijo } from '../../utils/helpers';
 import useCatalogo from './useCatalogo';
 import './CatalogoPage.css';
@@ -42,6 +43,9 @@ function commissionLabel(servicio) {
 
 export default function CatalogoPage() {
   const catalogo = useCatalogo();
+  const { hasPermission } = useAuth();
+  const canEdit = hasPermission('cat_crear_editar');
+  const canDelete = hasPermission('cat_eliminar');
 
   useEffect(() => {
     if (!catalogo.modalOpen && !catalogo.confirmId) return undefined;
@@ -62,10 +66,12 @@ export default function CatalogoPage() {
           <h2>Catálogo</h2>
           <p>Administra tratamientos, precios y comisiones que usa el corte diario.</p>
         </div>
-        <button type="button" className="catalogo-add is-header" onClick={catalogo.openCreate}>
-          <Plus size={16} />
-          Nuevo servicio
-        </button>
+        {canEdit ? (
+          <button type="button" className="catalogo-add is-header" onClick={catalogo.openCreate}>
+            <Plus size={16} />
+            Nuevo servicio
+          </button>
+        ) : null}
       </header>
 
       <label className="catalogo-search">
@@ -92,10 +98,12 @@ export default function CatalogoPage() {
         ))}
       </div>
 
-      <button type="button" className="catalogo-add is-inline" onClick={catalogo.openCreate}>
-        <Plus size={16} />
-        Nuevo servicio
-      </button>
+      {canEdit ? (
+        <button type="button" className="catalogo-add is-inline" onClick={catalogo.openCreate}>
+          <Plus size={16} />
+          Nuevo servicio
+        </button>
+      ) : null}
 
       {catalogo.error ? <p className="catalogo-error">{catalogo.error}</p> : null}
 
@@ -110,16 +118,22 @@ export default function CatalogoPage() {
               <strong>{servicio.nombre}</strong>
               <em>{formatMoney(servicio.precioBase)}</em>
               <small>{commissionLabel(servicio)}</small>
-              <div className="catalogo-actions">
-                <button type="button" onClick={() => catalogo.openEdit(servicio)}>
-                  <Pencil size={14} />
-                  Editar
-                </button>
-                <button type="button" onClick={() => catalogo.setConfirmId(servicio.id)}>
-                  <Trash2 size={14} />
-                  Eliminar
-                </button>
-              </div>
+              {canEdit || canDelete ? (
+                <div className="catalogo-actions">
+                  {canEdit ? (
+                    <button type="button" onClick={() => catalogo.openEdit(servicio)}>
+                      <Pencil size={14} />
+                      Editar
+                    </button>
+                  ) : null}
+                  {canDelete ? (
+                    <button type="button" onClick={() => catalogo.setConfirmId(servicio.id)}>
+                      <Trash2 size={14} />
+                      Eliminar
+                    </button>
+                  ) : null}
+                </div>
+              ) : null}
             </article>
           ))}
         </section>
